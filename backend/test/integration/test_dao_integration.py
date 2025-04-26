@@ -1,30 +1,36 @@
 import pytest
+from pymongo.errors import WriteError
 from src.util.dao import DAO
-from pymongo import MongoClient
 
-@pytest.fixture(scope="module")
-def test_dao():
-    # Setup test database
-    client = MongoClient('mongodb://root:root@localhost:27017/admin')
-    db = client['test_edutask']
-    collection = db['test_users']
-    
-    # Define validators (example schema)
-    db.command({
-        'collMod': 'test_users',
-        'validator': {
-            '$jsonSchema': {
-                'bsonType': 'object',
-                'required': ['name', 'email'],
-                'properties': {
-                    'name': {'bsonType': 'string'},
-                    'email': {'bsonType': 'string', 'pattern': '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'}
-                }
-            }
-        }
-    })
-    
-    yield DAO(collection_name='test_users')
-    
-    # Teardown: Drop test collection
-    db.drop_collection('test_users')
+def test_create_valid_data(dao):
+    data = {
+        "firstName": "Alice",
+        "lastName": "Smith",
+        "email": "alice@example.com"
+    }
+    result = dao.create(data)
+    assert result is not None
+
+def test_create_missing_required_field(dao):
+    data = {"email": "bob@example.com"}  # Missing firstName and lastName
+    with pytest.raises(WriteError):
+        dao.create(data)
+
+def test_create_invalid_data_type(dao):
+    data = {
+        "firstName": "Charlie",
+        "lastName": "Brown",
+        "email": 12345  # Invalid email type
+    }
+    with pytest.raises(WriteError):
+        dao.create(data)
+
+def test_create_duplicate_unique_field(dao):
+    data = {
+        "firstName": "Dave",
+        "lastName": "Johnson",
+        "email": "dave@example.com"  # Unique field
+    }
+    dao.create(data)
+    with pytest.raises(WriteError):
+        dao.create(data)  # Duplicate email

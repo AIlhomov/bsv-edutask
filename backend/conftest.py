@@ -17,4 +17,7 @@ def dao():
     # Teardown: Clean up test data
     dao.collection.delete_many({})
     # Restore original environment variable
-    os.environ["MONGO_URL"] = original_mongo_url
+    if original_mongo_url is not None:
+        os.environ["MONGO_URL"] = original_mongo_url
+    else:
+        os.environ.pop("MONGO_URL", None)

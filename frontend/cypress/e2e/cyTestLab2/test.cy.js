@@ -48,6 +48,8 @@ describe("Loggin and create task", () => {
 
     // Verify that the thumbnail is rendered
     cy.get(`img[src*="${youtubeKey}"]`).should("exist");
+
+    cy.get(`img[src*="${youtubeKey}"]`).click();
   });
 
   after(function () {

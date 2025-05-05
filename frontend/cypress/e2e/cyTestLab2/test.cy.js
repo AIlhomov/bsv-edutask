@@ -52,7 +52,7 @@ describe("Loggin and create task", () => {
     cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
 
     cy.get(".inline-form").find("input[type=text]").type("Test Todo");
-    cy.get("form").submit();
+    cy.get(".inline-form").submit();
   });
 
   after(function () {

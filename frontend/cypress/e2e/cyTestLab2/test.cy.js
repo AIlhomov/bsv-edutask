@@ -49,7 +49,10 @@ describe("Loggin and create task", () => {
     // Verify that the thumbnail is rendered
     cy.get(`img[src*="${youtubeKey}"]`).should("exist");
 
-    cy.get(`img[src*="${youtubeKey}"]`).click();
+    cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
+
+    cy.get(".inline-form").find("input[type=text]").type("Test Todo");
+    cy.get("form").submit();
   });
 
   after(function () {

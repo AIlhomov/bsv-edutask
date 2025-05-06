@@ -1,4 +1,4 @@
-describe("Loggin and create task", () => {
+describe("Loggin, create task Empty ToDo", () => {
   // define variables that we need on multiple occasions
   let uid; // user id
   let name; // name of the user (firstName + ' ' + lastName)
@@ -51,10 +51,14 @@ describe("Loggin and create task", () => {
 
     cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
 
-    cy.get(".inline-form").find("input[type=text]").type("Test Todo");
+    let emptyTodo = " ";
+    cy.get(".inline-form")
+      .find("input[type=text]")
+      .type(emptyTodo, { force: true });
     cy.get(".inline-form").find("input[type=submit]").click();
 
-    cy.get(".todo-list").contains("Test Todo").should("exist");
+    // cy.get(".todo-list").contains(emptyTodo).should("exist");
+    cy.get("li.todo-item").should("have.length", 1); // Ensure only one todo is present
   });
 
   after(function () {

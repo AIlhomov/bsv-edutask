@@ -1,4 +1,6 @@
-describe("Loggin, create task, ValidToDO", () => {
+import { wait } from "@testing-library/react";
+
+describe("Loggin, create task Empty ToDo", () => {
   // define variables that we need on multiple occasions
   let uid; // user id
   let name; // name of the user (firstName + ' ' + lastName)
@@ -36,7 +38,7 @@ describe("Loggin, create task, ValidToDO", () => {
     // assert that the user is now logged in
     cy.get("h1").should("contain.text", "Your tasks, " + name);
 
-    const taskTitle = "Test Task Title";
+    const taskTitle = "Karma Task Title";
     const youtubeKey = "dQw4w9WgXcQ"; // Use a valid video ID
 
     cy.get(".inputwrapper #title").type(taskTitle);
@@ -50,13 +52,13 @@ describe("Loggin, create task, ValidToDO", () => {
     cy.get(`img[src*="${youtubeKey}"]`).should("exist");
 
     cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
-    cy.get("li.todo-item").should("have.length", 1); // Ensure only one todo is present
 
-    cy.get(".inline-form").find("input[type=text]").type("Test Todo");
     cy.get(".inline-form").find("input[type=submit]").click();
 
-    cy.get("ul.todo-list").contains("Test Todo").should("exist");
-    cy.get("li.todo-item").should("have.length", 2); // Ensure only one todo is present
+    // cy.get(".todo-list").contains(emptyTodo).should("exist");
+    cy.wait(1000); // Wait for the UI to updatekkk
+
+    cy.get("li.todo-item").should("have.length", 1); // Ensure only one todo is present
   });
 
   after(function () {

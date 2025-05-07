@@ -1,8 +1,8 @@
-describe("Loggin, create task Empty ToDo", () => {
+describe("Loggin, create task, ValidToDO", () => {
   // define variables that we need on multiple occasions
-  let uid; // user id
+  let uid; // user idsadlkasndlnad
   let name; // name of the user (firstName + ' ' + lastName)
-  let email; // email of the user
+  let email; // email of the usersjadnsandsad
 
   before(function () {
     // create a fabricated user from a fixture
@@ -50,15 +50,13 @@ describe("Loggin, create task Empty ToDo", () => {
     cy.get(`img[src*="${youtubeKey}"]`).should("exist");
 
     cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
+    cy.get("li.todo-item").should("have.length", 1); // Ensure only one todo is present
 
-    let emptyTodo = " ";
-    cy.get(".inline-form")
-      .find("input[type=text]")
-      .type(emptyTodo, { force: true });
+    cy.get(".inline-form").find("input[type=text]").type("Test Todo");
     cy.get(".inline-form").find("input[type=submit]").click();
 
-    // cy.get(".todo-list").contains(emptyTodo).should("exist");
-    cy.get("li.todo-item").should("have.length", 1); // Ensure only one todo is present
+    cy.get("ul.todo-list").contains("Test Todo").should("exist");
+    cy.get("li.todo-item").should("have.length", 2); // Ensure only one todo is present
   });
 
   after(function () {

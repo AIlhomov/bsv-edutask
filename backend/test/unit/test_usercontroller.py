@@ -14,23 +14,35 @@ def user_controller(mock_dao):
     return UserController(dao=mock_dao)
 
 @pytest.mark.demo
-def test_valid_email_single_user(user_controller, mock_dao):
+def test_valid_email_single_user1(user_controller, mock_dao):
+    """Test with a valid email that matches exactly one user."""
+    mock_dao.find.return_value = [{"_id": "123", "email": "test@example.com"}]
+    user = user_controller.get_user_by_email("test@example.com")
+    assert user["email"] == "test@example.com"
+
+def test_valid_email_single_user2(user_controller, mock_dao):
     """Test with a valid email that matches exactly one user."""
     mock_dao.find.return_value = [{"_id": "123", "email": "test@example.com"}]
     user = user_controller.get_user_by_email("test@example.com")
     assert user["_id"] == "123"
-    assert user["email"] == "test@example.com"
-
-def test_valid_email_multiple_users(user_controller, mock_dao, capsys):
+    
+def test_valid_email_multiple_users1(user_controller, mock_dao, capsys):
     """Test with a valid email that matches multiple users."""
     mock_dao.find.return_value = [
         {"_id": "123", "email": "test@example.com"},
         {"_id": "456", "email": "test@example.com"}
     ]
     user = user_controller.get_user_by_email("test@example.com")
+    assert user["_id"] == "123"
+
+def test_valid_email_multiple_users2(user_controller, mock_dao, capsys):
+    """Test with a valid email that matches multiple users."""
+    mock_dao.find.return_value = [
+        {"_id": "123", "email": "test@example.com"},
+        {"_id": "456", "email": "test@example.com"}
+    ]
     captured = capsys.readouterr()
     assert "Error: more than one user found with mail test@example.com" in captured.out
-    assert user["_id"] == "123"
 
 def test_invalid_email_format(user_controller):
     """Test with an invalid email format."""

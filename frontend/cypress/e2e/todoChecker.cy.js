@@ -135,7 +135,14 @@ describe("login and check a todo in a task", () => {
       cy.get("li.todo-item").then(($items) => {
         //get the number of todos
         toDoCounter = $items.length;
-        cy.get("li.todo-item").should("contain.text", todoDescription);
+
+        cy.contains(" ul.todo-list li.todo-item", todoDescription).within(
+          () => {
+            cy.get(".remover").click();
+          }
+        );
+        cy.wait(1000); // Wait for the UI to update
+        cy.get(".container-element").should("have.length", taskCounter + 1); // Ensure only one todo is present
       });
     });
   });

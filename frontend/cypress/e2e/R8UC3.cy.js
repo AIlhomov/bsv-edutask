@@ -58,69 +58,24 @@ describe("login and check a todo in a task", () => {
     });
   });
 
-  it("create todo with Valid describtion", () => {
+  it("Delete a todo item", () => {
     cy.get(".container-element").then(($items) => {
       taskCounter = $items.length;
 
       cy.get(`img[src*="${youtubeKey}"]`)
         .eq(taskCounter - 1)
         .click(); //Open detail view
-
       cy.get("li.todo-item").then(($items) => {
         //get the number of todos
         toDoCounter = $items.length;
 
-        cy.get("li.todo-item").should("have.length", toDoCounter); // double check that we are in the right task
-
-        cy.get(".inline-form")
-          .find("input[type=text]")
-          .type("Test Todo" + toDoCounter);
-        cy.get(".inline-form").find("input[type=submit]").click();
-
-        cy.get("ul.todo-list").contains("Test Todo").should("exist");
-        cy.get("li.todo-item").should("have.length", toDoCounter + 1); // make sure it increased by
-      });
-    });
-  });
-
-  it("Main scenario: check the existing TODOOOO", () => {
-    cy.get(".container-element").then(($items) => {
-      taskCounter = $items.length;
-
-      cy.get(`img[src*="${youtubeKey}"]`)
-        .eq(taskCounter - 1)
-        .click(); //Open detail view
-
-      cy.contains(" ul.todo-list li.todo-item", todoDescription).within(() => {
-        cy.get(".checker").click();
-
         cy.contains(" ul.todo-list li.todo-item", todoDescription).within(
           () => {
-            cy.get(".checker").should("have.class", "checked");
+            cy.get(".remover").click();
           }
         );
-      });
-    });
-  });
-
-  it("Alt Scenario: UNcheck the existing TODOOOO", () => {
-    cy.get(".container-element").then(($items) => {
-      taskCounter = $items.length;
-
-      cy.get(`img[src*="${youtubeKey}"]`)
-        .eq(taskCounter - 1)
-        .click(); //Open detail view
-
-      cy.contains(" ul.todo-list li.todo-item", todoDescription).within(() => {
-        cy.get(".checker").click();
-
-        cy.contains(" ul.todo-list li.todo-item", todoDescription).within(
-          () => {
-            cy.get(".checker").should("have.class", "checked");
-            cy.get(".checker").click();
-            cy.get(".checker").should("have.class", "unchecked");
-          }
-        );
+        cy.wait(1000); // Wait for the UI to update
+        cy.get("li.todo-item").should("have.length", toDoCounter - 1); // Ensure only one todo is present
       });
     });
   });

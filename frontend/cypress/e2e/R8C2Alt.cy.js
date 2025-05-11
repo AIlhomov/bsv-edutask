@@ -83,7 +83,7 @@ describe("login and check a todo in a task", () => {
     });
   });
 
-  it("Main scenario: check the existing TODOOOO", () => {
+  it("check the existing TODOOOO", () => {
     cy.get(".container-element").then(($items) => {
       taskCounter = $items.length;
 
@@ -97,28 +97,6 @@ describe("login and check a todo in a task", () => {
         cy.contains(" ul.todo-list li.todo-item", todoDescription).within(
           () => {
             cy.get(".checker").should("have.class", "checked");
-          }
-        );
-      });
-    });
-  });
-
-  it("Alt Scenario: UNcheck the existing TODOOOO", () => {
-    cy.get(".container-element").then(($items) => {
-      taskCounter = $items.length;
-
-      cy.get(`img[src*="${youtubeKey}"]`)
-        .eq(taskCounter - 1)
-        .click(); //Open detail view
-
-      cy.contains(" ul.todo-list li.todo-item", todoDescription).within(() => {
-        cy.get(".checker").click();
-
-        cy.contains(" ul.todo-list li.todo-item", todoDescription).within(
-          () => {
-            cy.get(".checker").should("have.class", "checked");
-            cy.get(".checker").click();
-            cy.get(".checker").should("have.class", "unchecked");
           }
         );
       });

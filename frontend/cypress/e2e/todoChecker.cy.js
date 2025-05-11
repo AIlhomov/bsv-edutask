@@ -1,8 +1,11 @@
-describe("Loggin, create task, ValidToDO", () => {
+describe("login and check a todo in a task", () => {
   // define variables that we need on multiple occasions
   let uid; // user idsadlkasndlnad
   let name; // name of the user (firstName + ' ' + lastName)
   let email; // email of the usersjadnsandsad
+  let taskTitle = "Test Task Title";
+  let youtubeKey = "dQw4w9WgXcQ"; // Use a valid video ID
+  let todoDescription = "Watch video";
 
   before(function () {
     // create a fabricated user from a fixture
@@ -23,10 +26,6 @@ describe("Loggin, create task, ValidToDO", () => {
   beforeEach(function () {
     // enter the main main page
     cy.visit("http://localhost:3000");
-  });
-
-  it("check exisitng toDO", () => {
-    // detect a div which contains "Email Address", find the input and type (in a declarative way)
     cy.contains("div", "Email Address").find("input[type=text]").type(email);
     // alternative, imperative way of detecting that input field
     //cy.get('.inputwrapper #email')
@@ -35,10 +34,9 @@ describe("Loggin, create task, ValidToDO", () => {
     cy.get("form").submit();
     // assert that the user is now logged in
     cy.get("h1").should("contain.text", "Your tasks, " + name);
+  });
 
-    const taskTitle = "Test Task Title";
-    const youtubeKey = "dQw4w9WgXcQ";
-
+  it("create the task", () => {
     cy.get(".inputwrapper #title").type(taskTitle);
     cy.get(".inputwrapper #url").type(youtubeKey);
     cy.get("form").submit();
@@ -49,16 +47,44 @@ describe("Loggin, create task, ValidToDO", () => {
 
     cy.get(`img[src*="${youtubeKey}"]`).eq(0).click(); //Open detail view
     cy.get("li.todo-item").should("have.length", 1); // Ensure only one todo is present
+  });
 
-    cy.contains(" ul.todo-list li.todo-item", "Watch video").within(() => {
+  it("create todo with Valid describtion", () => {
+    cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
+    cy.get("li.todo-item").should("have.length", 1); // Ensure only one todo is present
+
+    cy.get(".inline-form").find("input[type=text]").type("Test Todo");
+    cy.get(".inline-form").find("input[type=submit]").click();
+
+    cy.get("ul.todo-list").contains("Test Todo").should("exist");
+    cy.get("li.todo-item").should("have.length", 2); // Ensure only one todo is present
+  });
+
+  it("check the existing TODOOOO", () => {
+    cy.get(`img[src*="${youtubeKey}"]`).eq(0).click(); //Open detail view
+
+    cy.contains(" ul.todo-list li.todo-item", todoDescription).within(() => {
       cy.get(".checker").click();
 
-      cy.contains(" ul.todo-list li.todo-item", "Watch video").within(() => {
+      cy.contains(" ul.todo-list li.todo-item", todoDescription).within(() => {
         cy.get(".checker").should("have.class", "checked");
       });
     });
   });
 
+  it("UNcheck the existing TODOOOO", () => {
+    cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
+
+    cy.contains(" ul.todo-list li.todo-item", todoDescription).within(() => {
+      cy.get(".checker").click();
+
+      cy.contains(" ul.todo-list li.todo-item", todoDescription).within(() => {
+        cy.get(".checker").should("have.class", "checked");
+        cy.get(".checker").click();
+        cy.get(".checker").should("have.class", "unchecked");
+      });
+    });
+  });
   after(function () {
     // clean up by deleting the user from the database
     cy.request({

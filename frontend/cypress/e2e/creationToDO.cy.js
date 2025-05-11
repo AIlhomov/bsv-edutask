@@ -23,16 +23,15 @@ describe("Loggin, create task, ValidToDO", () => {
   beforeEach(function () {
     // enter the main main page
     cy.visit("http://localhost:3000");
-  });
-
-  it("create todo with Valid describtion", () => {
-    // detect a div which contains "Email Address", find the input and type (in a declarative way)
     cy.contains("div", "Email Address").find("input[type=text]").type(email);
     // alternative, imperative way of detecting that input field
     //cy.get('.inputwrapper #email')
     //    .type(email)
     // submit the form on this page
     cy.get("form").submit();
+  });
+
+  it("create todo with Valid describtion", () => {
     // assert that the user is now logged in
     cy.get("h1").should("contain.text", "Your tasks, " + name);
 
@@ -60,16 +59,6 @@ describe("Loggin, create task, ValidToDO", () => {
   });
 
   it("create todo with empty describtion", () => {
-    // detect a div which contains "Email Address", find the input and type (in a declarative way)
-    cy.contains("div", "Email Address").find("input[type=text]").type(email);
-    // alternative, imperative way of detecting that input field
-    //cy.get('.inputwrapper #email')
-    //    .type(email)
-    // submit the form on this page
-    cy.get("form").submit();
-    // assert that the user is now logged in
-    cy.get("h1").should("contain.text", "Your tasks, " + name);
-
     const taskTitle = "sec Task Title2";
     const youtubeKey = "u8vMu7viCm8"; // Use a valid video ID
 

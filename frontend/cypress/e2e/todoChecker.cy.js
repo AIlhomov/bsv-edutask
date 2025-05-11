@@ -7,6 +7,8 @@ describe("login and check a todo in a task", () => {
   let youtubeKey = "dQw4w9WgXcQ"; // Use a valid video ID
   let todoDescription = "Watch video";
 
+  let taskCounter = 0;
+  let toDoCounter = 0;
   before(function () {
     // create a fabricated user from a fixture
     cy.fixture("user.json").then((user) => {
@@ -37,54 +39,107 @@ describe("login and check a todo in a task", () => {
   });
 
   it("create the task", () => {
-    cy.get(".inputwrapper #title").type(taskTitle);
-    cy.get(".inputwrapper #url").type(youtubeKey);
-    cy.get("form").submit();
+    cy.get(".container-element").then(($items) => {
+      taskCounter = $items.length;
 
-    cy.contains(taskTitle).should("exist");
+      cy.get(".inputwrapper #title").type(taskTitle + taskCounter);
+      cy.get(".inputwrapper #url").type(youtubeKey);
+      cy.get("form").submit();
 
-    cy.get(`img[src*="${youtubeKey}"]`).should("exist");
+      cy.contains(taskTitle).should("exist");
 
-    cy.get(`img[src*="${youtubeKey}"]`).eq(0).click(); //Open detail view
-    cy.get("li.todo-item").should("have.length", 1); // Ensure only one todo is present
+      cy.get(`img[src*="${youtubeKey}"]`).should("exist");
+
+      cy.get(`img[src*="${youtubeKey}"]`)
+        .eq(taskCounter - 1) //index of the last task
+        .click(); //Open detail view
+
+      cy.get(".container-element").should("have.length", taskCounter + 1); // Ensure only one todo is present
+    });
   });
 
   it("create todo with Valid describtion", () => {
-    cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
-    cy.get("li.todo-item").should("have.length", 1); // Ensure only one todo is present
+    cy.get(".container-element").then(($items) => {
+      taskCounter = $items.length;
 
-    cy.get(".inline-form").find("input[type=text]").type("Test Todo");
-    cy.get(".inline-form").find("input[type=submit]").click();
+      cy.get(`img[src*="${youtubeKey}"]`)
+        .eq(taskCounter - 1)
+        .click(); //Open detail view
 
-    cy.get("ul.todo-list").contains("Test Todo").should("exist");
-    cy.get("li.todo-item").should("have.length", 2); // Ensure only one todo is present
+      cy.get("li.todo-item").then(($items) => {
+        //get the number of todos
+        toDoCounter = $items.length;
+
+        cy.get("li.todo-item").should("have.length", toDoCounter); // double check that we are in the right task
+
+        cy.get(".inline-form")
+          .find("input[type=text]")
+          .type("Test Todo" + toDoCounter);
+        cy.get(".inline-form").find("input[type=submit]").click();
+
+        cy.get("ul.todo-list").contains("Test Todo").should("exist");
+        cy.get("li.todo-item").should("have.length", toDoCounter + 1); // make sure it increased by
+      });
+    });
   });
 
   it("check the existing TODOOOO", () => {
-    cy.get(`img[src*="${youtubeKey}"]`).eq(0).click(); //Open detail view
+    cy.get(".container-element").then(($items) => {
+      taskCounter = $items.length;
 
-    cy.contains(" ul.todo-list li.todo-item", todoDescription).within(() => {
-      cy.get(".checker").click();
+      cy.get(`img[src*="${youtubeKey}"]`)
+        .eq(taskCounter - 1)
+        .click(); //Open detail view
 
       cy.contains(" ul.todo-list li.todo-item", todoDescription).within(() => {
-        cy.get(".checker").should("have.class", "checked");
+        cy.get(".checker").click();
+
+        cy.contains(" ul.todo-list li.todo-item", todoDescription).within(
+          () => {
+            cy.get(".checker").should("have.class", "checked");
+          }
+        );
       });
     });
   });
 
   it("UNcheck the existing TODOOOO", () => {
-    cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
+    cy.get(".container-element").then(($items) => {
+      taskCounter = $items.length;
 
-    cy.contains(" ul.todo-list li.todo-item", todoDescription).within(() => {
-      cy.get(".checker").click();
+      cy.get(`img[src*="${youtubeKey}"]`)
+        .eq(taskCounter - 1)
+        .click(); //Open detail view
 
       cy.contains(" ul.todo-list li.todo-item", todoDescription).within(() => {
-        cy.get(".checker").should("have.class", "checked");
         cy.get(".checker").click();
-        cy.get(".checker").should("have.class", "unchecked");
+
+        cy.contains(" ul.todo-list li.todo-item", todoDescription).within(
+          () => {
+            cy.get(".checker").should("have.class", "checked");
+            cy.get(".checker").click();
+            cy.get(".checker").should("have.class", "unchecked");
+          }
+        );
       });
     });
   });
+
+  it("Delete a todo item", () => {
+    cy.get(".container-element").then(($items) => {
+      taskCounter = $items.length;
+
+      cy.get(`img[src*="${youtubeKey}"]`)
+        .eq(taskCounter - 1)
+        .click(); //Open detail view
+      cy.get("li.todo-item").then(($items) => {
+        //get the number of todos
+        toDoCounter = $items.length;
+        cy.get("li.todo-item").should("contain.text", todoDescription);
+      });
+    });
+  });
+
   after(function () {
     // clean up by deleting the user from the database
     cy.request({

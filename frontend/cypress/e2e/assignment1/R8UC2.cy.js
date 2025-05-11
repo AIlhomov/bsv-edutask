@@ -50,9 +50,7 @@ describe("login and check a todo in a task", () => {
 
       cy.get(`img[src*="${youtubeKey}"]`).should("exist");
 
-      cy.get(`img[src*="${youtubeKey}"]`)
-        .eq(taskCounter - 1) //index of the last task
-        .click(); //Open detail view
+      cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
 
       cy.get(".container-element").should("have.length", taskCounter + 1); // Ensure only one todo is present
     });
@@ -62,9 +60,7 @@ describe("login and check a todo in a task", () => {
     cy.get(".container-element").then(($items) => {
       taskCounter = $items.length;
 
-      cy.get(`img[src*="${youtubeKey}"]`)
-        .eq(taskCounter - 1)
-        .click(); //Open detail view
+      cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
 
       cy.get("li.todo-item").then(($items) => {
         //get the number of todos
@@ -87,9 +83,7 @@ describe("login and check a todo in a task", () => {
     cy.get(".container-element").then(($items) => {
       taskCounter = $items.length;
 
-      cy.get(`img[src*="${youtubeKey}"]`)
-        .eq(taskCounter - 1)
-        .click(); //Open detail view
+      cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
 
       cy.contains(" ul.todo-list li.todo-item", todoDescription).within(() => {
         cy.get(".checker").click();
@@ -102,12 +96,9 @@ describe("login and check a todo in a task", () => {
     cy.get(".container-element").then(($items) => {
       taskCounter = $items.length;
 
-      cy.get(`img[src*="${youtubeKey}"]`)
-        .eq(taskCounter - 1)
-        .click(); //Open detail view
+      cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
 
       cy.contains(" ul.todo-list li.todo-item", todoDescription).within(() => {
-        cy.get(".checker").click();
         cy.get(".checker").should("have.class", "checked");
         cy.get(".checker").click();
         cy.get(".checker").should("have.class", "unchecked");

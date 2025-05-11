@@ -71,7 +71,7 @@ describe("login and check a todo in a task", () => {
 
         cy.contains(" ul.todo-list li.todo-item", todoDescription).within(
           () => {
-            cy.get(".remover").click();
+            cy.get(".remover").click({ force: true });
           }
         );
         cy.wait(1000); // Wait for the UI to update

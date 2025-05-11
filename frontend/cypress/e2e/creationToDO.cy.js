@@ -25,7 +25,7 @@ describe("Loggin, create task, ValidToDO", () => {
     cy.visit("http://localhost:3000");
   });
 
-  it("check exisitng toDO", () => {
+  it("create todo with Valid describtion", () => {
     // detect a div which contains "Email Address", find the input and type (in a declarative way)
     cy.contains("div", "Email Address").find("input[type=text]").type(email);
     // alternative, imperative way of detecting that input field
@@ -37,26 +37,60 @@ describe("Loggin, create task, ValidToDO", () => {
     cy.get("h1").should("contain.text", "Your tasks, " + name);
 
     const taskTitle = "Test Task Title";
-    const youtubeKey = "dQw4w9WgXcQ";
+    const youtubeKey = "dQw4w9WgXcQ"; // Use a valid video ID
 
     cy.get(".inputwrapper #title").type(taskTitle);
     cy.get(".inputwrapper #url").type(youtubeKey);
     cy.get("form").submit();
 
+    // Verify that the task appears in the UI
     cy.contains(taskTitle).should("exist");
 
+    // Verify that the thumbnail is rendered
     cy.get(`img[src*="${youtubeKey}"]`).should("exist");
 
-    cy.get(`img[src*="${youtubeKey}"]`).eq(0).click(); //Open detail view
+    cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
     cy.get("li.todo-item").should("have.length", 1); // Ensure only one todo is present
 
-    cy.contains(" ul.todo-list li.todo-item", "Watch video").within(() => {
-      cy.get(".checker").click();
+    cy.get(".inline-form").find("input[type=text]").type("Test Todo");
+    cy.get(".inline-form").find("input[type=submit]").click();
 
-      cy.contains(" ul.todo-list li.todo-item", "Watch video").within(() => {
-        cy.get(".checker").should("have.class", "checked");
-      });
-    });
+    cy.get("ul.todo-list").contains("Test Todo").should("exist");
+    cy.get("li.todo-item").should("have.length", 2); // Ensure only one todo is present
+  });
+
+  it("create todo with empty describtion", () => {
+    // detect a div which contains "Email Address", find the input and type (in a declarative way)
+    cy.contains("div", "Email Address").find("input[type=text]").type(email);
+    // alternative, imperative way of detecting that input field
+    //cy.get('.inputwrapper #email')
+    //    .type(email)
+    // submit the form on this page
+    cy.get("form").submit();
+    // assert that the user is now logged in
+    cy.get("h1").should("contain.text", "Your tasks, " + name);
+
+    const taskTitle = "sec Task Title2";
+    const youtubeKey = "u8vMu7viCm8"; // Use a valid video ID
+
+    cy.get(".inputwrapper #title").type(taskTitle);
+    cy.get(".inputwrapper #url").type(youtubeKey);
+    cy.get("form").submit();
+
+    // Verify that the task appears in the UI
+    cy.contains(taskTitle).should("exist");
+
+    // Verify that the thumbnail is rendered
+    cy.get(`img[src*="${youtubeKey}"]`).should("exist");
+
+    cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
+
+    cy.get(".inline-form").find("input[type=submit]").click();
+
+    // cy.get(".todo-list").contains(emptyTodo).should("exist");
+    cy.wait(1000); // Wait for the UI to updatekkk
+
+    cy.get("li.todo-item").should("have.length", 1); // Ensure only one todo is present
   });
 
   after(function () {

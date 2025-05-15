@@ -4,7 +4,7 @@ describe("login and check a todo in a task", () => {
   let name; // name of the user (firstName + ' ' + lastName)
   let email; // email of the usersjadnsandsad
   let taskTitle = "Test Task Title";
-  let youtubeKey = "dQw4w9WgXcQ"; // Use a valid video ID
+  let youtubeKey = "yk3prd8GER4"; // Use a valid video ID
   let todoDescription = "Watch video";
 
   let taskCounter = 0;

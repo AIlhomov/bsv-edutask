@@ -4,7 +4,7 @@ describe("login and check a todo in a task", () => {
   let name; // name of the user (firstName + ' ' + lastName)
   let email; // email of the usersjadnsandsad
   let taskTitle = "Test Task Title";
-  let youtubeKey = "dQw4w9WgXcQ"; // Use a valid video ID
+  let youtubeKey = "yk3prd8GER4"; // Use a valid video ID
   let todoDescription = "Watch video";
 
   let taskCounter = 0;
@@ -62,8 +62,7 @@ describe("login and check a todo in a task", () => {
     cy.get(".container-element").then(($items) => {
       taskCounter = $items.length;
 
-      cy.get(`img[src*="${youtubeKey}"]`)
-        .click(); //Open detail view
+      cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
       cy.get("li.todo-item").then(($items) => {
         //get the number of todos
         toDoCounter = $items.length;

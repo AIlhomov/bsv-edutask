@@ -37,7 +37,7 @@ describe("Loggin, create task, ValidToDO", () => {
     cy.get("h1").should("contain.text", "Your tasks, " + name);
 
     const taskTitle = "Test Task Title";
-    const youtubeKey = "dQw4w9WgXcQ"; // Use a valid video ID
+    const youtubeKey = "yk3prd8GER4"; // Use a valid video ID
 
     cy.get(".inputwrapper #title").type(taskTitle);
     cy.get(".inputwrapper #url").type(youtubeKey);

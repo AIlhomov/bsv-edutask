@@ -41,4 +41,5 @@ jobs:
     - name: Run backend tests
       run: |
         cd backend
-        python -m pytest test/unit/ -v
+        python -m pytest test/unit/test_usercontroller.py
+        

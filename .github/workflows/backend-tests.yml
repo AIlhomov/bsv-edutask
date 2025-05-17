@@ -10,10 +10,24 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      mongodb:
+        image: mongo:latest
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: root
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })' --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-#adsda
+      
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
@@ -27,4 +41,4 @@ jobs:
     - name: Run backend tests
       run: |
         cd backend
-        pytest
+        python -m pytest test/unit/ -v

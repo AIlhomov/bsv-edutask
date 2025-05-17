@@ -41,6 +41,7 @@ def test_valid_email_multiple_users2(user_controller, mock_dao, capsys):
         {"_id": "123", "email": "test@example.com"},
         {"_id": "456", "email": "test@example.com"}
     ]
+    user_controller.get_user_by_email("test@example.com")
     captured = capsys.readouterr()
     assert "Error: more than one user found with mail test@example.com" in captured.out
 

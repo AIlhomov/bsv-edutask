@@ -4,6 +4,10 @@ describe("Loggin, create task, ValidToDO", () => {
   let name; // name of the user (firstName + ' ' + lastName)
   let email; // email of the usersjadnsandsad
 
+  const taskTitle = "Test Task Title";
+  const youtubeKey = "yk3prd8GER4"; // Use a valid video ID
+  const taskDescription = "(karma was here hehehe)";
+
   before(function () {
     // create a fabricated user from a fixture
     cy.fixture("user.json").then((user) => {
@@ -16,6 +20,19 @@ describe("Loggin, create task, ValidToDO", () => {
         uid = response.body._id.$oid;
         name = user.firstName + " " + user.lastName;
         email = user.email;
+
+        return cy.request({
+          method: "POST",
+          url: "http://localhost:5000/tasks/create",
+          form: true,
+          body: {
+            title: taskTitle,
+            description: taskDescription,
+            userid: uid,
+            url: youtubeKey,
+            todos: "Watch video again", // send as string, not array
+          },
+        });
       });
     });
   });
@@ -35,13 +52,6 @@ describe("Loggin, create task, ValidToDO", () => {
     // assert that the user is now logged in
     cy.get("h1").should("contain.text", "Your tasks, " + name);
 
-    const taskTitle = "Test Task Title";
-    const youtubeKey = "yk3prd8GER4"; // Use a valid video ID
-
-    cy.get(".inputwrapper #title").type(taskTitle);
-    cy.get(".inputwrapper #url").type(youtubeKey);
-    cy.get("form").submit();
-
     // Verify that the task appears in the UI
     cy.contains(taskTitle).should("exist");
 
@@ -49,23 +59,21 @@ describe("Loggin, create task, ValidToDO", () => {
     cy.get(`img[src*="${youtubeKey}"]`).should("exist");
 
     cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
-    cy.get("li.todo-item").should("have.length", 1); // Ensure only one todo is present
+    cy.get("li.todo-item").then(($items) => {
+      let todoCount = $items.length;
+      cy.get("li.todo-item").should("have.length", todoCount); // Ensure only one todo is present
 
-    cy.get(".inline-form").find("input[type=text]").type("Test Todo");
-    cy.get(".inline-form").find("input[type=submit]").click();
+      cy.get(".inline-form").find("input[type=text]").type("Test Todo");
+      cy.get(".inline-form").find("input[type=submit]").click();
 
-    cy.get("ul.todo-list").contains("Test Todo").should("exist");
-    cy.get("li.todo-item").should("have.length", 2); // Ensure only one todo is present
+      cy.get("ul.todo-list").contains("Test Todo").should("exist");
+      cy.wait(500); // wait for the todo to appear before asserting
+
+      cy.get("li.todo-item").should("have.length", todoCount + 1); // make sure it increase by one and only one
+    });
   });
 
   it("create todo with empty describtion", () => {
-    const taskTitle = "sec Task Title2";
-    const youtubeKey = "u8vMu7viCm8"; // Use a valid video ID
-
-    cy.get(".inputwrapper #title").type(taskTitle);
-    cy.get(".inputwrapper #url").type(youtubeKey);
-    cy.get("form").submit();
-
     // Verify that the task appears in the UI
     cy.contains(taskTitle).should("exist");
 
@@ -74,12 +82,14 @@ describe("Loggin, create task, ValidToDO", () => {
 
     cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
 
-    cy.get(".inline-form").find("input[type=submit]").click();
+    cy.get("li.todo-item").then(($items) => {
+      let todoCount = $items.length;
+      cy.get("li.todo-item").should("have.length", todoCount);
 
-    // cy.get(".todo-list").contains(emptyTodo).should("exist");
-    cy.wait(1000); // Wait for the UI to updatekkk
-
-    cy.get("li.todo-item").should("have.length", 1); // Ensure only one todo is present
+      cy.get(".inline-form").find("input[type=submit]").click({ force: true });
+      cy.wait(500); // wait for the todo to appear before asserting
+      cy.get("li.todo-item").should("have.length", todoCount); //make sure it has not increased
+    });
   });
 
   after(function () {

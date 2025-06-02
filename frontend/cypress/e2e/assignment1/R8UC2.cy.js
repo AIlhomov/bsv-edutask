@@ -98,6 +98,8 @@ describe("login and check a todo in a task", () => {
       cy.contains(" ul.todo-list li.todo-item", checkMeTodo).within(() => {
         cy.get(".checker").click();
         cy.get(".checker").should("have.class", "checked");
+        cy.get(".editable") // or the selector for the todo text
+          .should("have.css", "text-decoration-line", "line-through");
       });
     });
   });
@@ -110,6 +112,8 @@ describe("login and check a todo in a task", () => {
         cy.get(".checker").should("have.class", "checked");
         cy.get(".checker").click();
         cy.get(".checker").should("have.class", "unchecked");
+        cy.get(".editable") // or the selector for the todo text
+          .should("not.have.css", "text-decoration-line", "line-through");
       });
     });
   });

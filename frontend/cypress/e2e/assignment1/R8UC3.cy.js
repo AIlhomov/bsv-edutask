@@ -1,4 +1,4 @@
-describe("login and check a todo in a task", () => {
+describe("Delete an existing toDo with one click", () => {
   // define variables that we need on multiple occasions
   // define variables that we need on multiple occasions
   let uid; // user idsadlkasndlnad

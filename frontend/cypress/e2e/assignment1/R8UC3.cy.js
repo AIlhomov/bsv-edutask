@@ -1,14 +1,17 @@
-describe("login and check a todo in a task", () => {
+describe("Delete an existing toDo with one click", () => {
+  // define variables that we need on multiple occasions
   // define variables that we need on multiple occasions
   let uid; // user idsadlkasndlnad
   let name; // name of the user (firstName + ' ' + lastName)
   let email; // email of the usersjadnsandsad
   let taskTitle = "Test Task Title";
   let youtubeKey = "yk3prd8GER4"; // Use a valid video ID
-  let todoDescription = "Watch video";
+  let todoDescription = "delete me";
 
   let taskCounter = 0;
   let toDoCounter = 0;
+  const taskDescription = "(karma was here hehehe)";
+
   before(function () {
     // create a fabricated user from a fixture
     cy.fixture("user.json").then((user) => {
@@ -21,6 +24,19 @@ describe("login and check a todo in a task", () => {
         uid = response.body._id.$oid;
         name = user.firstName + " " + user.lastName;
         email = user.email;
+
+        return cy.request({
+          method: "POST",
+          url: "http://localhost:5000/tasks/create",
+          form: true,
+          body: {
+            title: taskTitle,
+            description: taskDescription,
+            userid: uid,
+            url: youtubeKey,
+            todos: todoDescription,
+          },
+        });
       });
     });
   });
@@ -38,26 +54,6 @@ describe("login and check a todo in a task", () => {
     cy.get("h1").should("contain.text", "Your tasks, " + name);
   });
 
-  it("create the task", () => {
-    cy.get(".container-element").then(($items) => {
-      taskCounter = $items.length;
-
-      cy.get(".inputwrapper #title").type(taskTitle + taskCounter);
-      cy.get(".inputwrapper #url").type(youtubeKey);
-      cy.get("form").submit();
-
-      cy.contains(taskTitle).should("exist");
-
-      cy.get(`img[src*="${youtubeKey}"]`).should("exist");
-
-      cy.get(`img[src*="${youtubeKey}"]`)
-        .eq(taskCounter - 1) //index of the last task
-        .click(); //Open detail view
-
-      cy.get(".container-element").should("have.length", taskCounter + 1); // Ensure only one todo is present
-    });
-  });
-
   it("Delete a todo item", () => {
     cy.get(".container-element").then(($items) => {
       taskCounter = $items.length;
@@ -69,13 +65,11 @@ describe("login and check a todo in a task", () => {
 
         cy.contains(" ul.todo-list li.todo-item", todoDescription).within(
           () => {
-            // CLICK 2 TIMES ON THE REMOVER BUTTON
             // this is a workaround for the fact that the first click does not remove the todo
-            cy.get(".remover").click({ force: true });
             cy.get(".remover").click({ force: true });
           }
         );
-        cy.wait(1000); // Wait for the UI to update
+        //cy.wait(500); // Wait for the UI to update
         cy.get("li.todo-item").should("have.length", toDoCounter - 1); // Ensure only one todo is present
       });
     });

@@ -65,9 +65,7 @@ describe("login and check a todo in a task", () => {
 
         cy.contains(" ul.todo-list li.todo-item", todoDescription).within(
           () => {
-            // CLICK 2 TIMES ON THE REMOVER BUTTON
             // this is a workaround for the fact that the first click does not remove the todo
-            cy.get(".remover").click({ force: true });
             cy.get(".remover").click({ force: true });
           }
         );

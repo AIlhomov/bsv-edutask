@@ -91,7 +91,7 @@ describe("login and check a todo in a task", () => {
     cy.get(`img[src*="${youtubeKey}"]`).click(); //Open detail view
   });
 
-  it("Main scenario: check the existing TODOOOO", () => {
+  it("Mark an undone task as done", () => {
     cy.get(".container-element").then(($items) => {
       taskCounter = $items.length;
 
@@ -104,7 +104,7 @@ describe("login and check a todo in a task", () => {
     });
   });
 
-  it("Alt Scenario: UNcheck the existing TODOOOO", () => {
+  it("Mark a done task as undone", () => {
     cy.get(".container-element").then(($items) => {
       taskCounter = $items.length;
 
